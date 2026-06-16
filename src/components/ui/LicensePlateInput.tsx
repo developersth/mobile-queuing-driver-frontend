@@ -22,10 +22,11 @@ export function LicensePlateInput({
   const chars = value.padEnd(7, " ").split("").slice(0, 7);
 
   const updateChar = (index: number, char: string) => {
+    const digit = char.slice(-1).replace(/\D/g, "");
     const next = [...chars];
-    next[index] = char.slice(-1).toUpperCase() || " ";
+    next[index] = digit || " ";
     onChange(next.join("").trimEnd());
-    if (char && index < 6) {
+    if (digit && index < 6) {
       inputsRef.current[index + 1]?.focus();
     }
   };
@@ -58,6 +59,8 @@ export function LicensePlateInput({
               inputsRef.current[i] = el;
             }}
             type="text"
+            inputMode="numeric"
+            pattern="[0-9]*"
             maxLength={1}
             value={chars[i]?.trim() ?? ""}
             onChange={(e) => updateChar(i, e.target.value)}
@@ -73,6 +76,8 @@ export function LicensePlateInput({
               inputsRef.current[i] = el;
             }}
             type="text"
+            inputMode="numeric"
+            pattern="[0-9]*"
             maxLength={1}
             value={chars[i]?.trim() ?? ""}
             onChange={(e) => updateChar(i, e.target.value)}
