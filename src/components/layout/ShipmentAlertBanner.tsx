@@ -100,8 +100,8 @@ export function ShipmentAlertBanner({ driverId }: Props) {
       const company = companyMap[s.customerGroupId?.toUpperCase()] ?? "TOP";
       if (selectedCompany && company !== selectedCompany) return;
 
-      // ── call time windows (status >= 13, not 81) ──
-      if (s.status !== null && s.status >= 13 && s.status !== 81) {
+      // ── call time windows (status 13-19, not 81) ──
+      if (s.status !== null && s.status >= 13 && s.status < 20 && s.status !== 81) {
         const s1 = parseDate(s.notify1stTimeStart);
         const e1 = parseDate(s.notify1stTimeEnd);
         const s2 = parseDate(s.notify2ndTimeStart);

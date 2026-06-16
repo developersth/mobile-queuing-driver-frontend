@@ -58,7 +58,7 @@ export default function RecentTasksPage() {
               key={shipment.shipmentNo}
               shipment={shipment}
               href={`/shipment/${shipment.shipmentNo}`}
-              showCountdown
+              showCountdown={shipment.status !== null && shipment.status < 20}
             />
           ))}
         </div>
