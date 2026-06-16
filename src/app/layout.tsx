@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Sarabun } from "next/font/google";
+import { AuthProvider } from "@/lib/auth-context";
 import "./globals.css";
 
 const sarabun = Sarabun({
@@ -38,7 +39,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="th" className={`${sarabun.variable} h-full`}>
-      <body className="min-h-dvh bg-[#f0f4f8] antialiased">{children}</body>
+      <body className="min-h-dvh bg-[#f0f4f8] antialiased">
+          <AuthProvider>{children}</AuthProvider>
+        </body>
     </html>
   );
 }

@@ -56,3 +56,11 @@ body {
 .card-shadow {
   box-shadow: 0 2px 12px rgba(0, 51, 102, 0.08);
 }
+
+@keyframes slide-up {
+  from { transform: translateY(100%); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+.animate-slide-up {
+  animation: slide-up 0.3s ease-out;
+}

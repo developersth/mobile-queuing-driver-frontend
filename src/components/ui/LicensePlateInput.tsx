@@ -8,6 +8,7 @@ interface LicensePlateInputProps {
   required?: boolean;
   value: string;
   onChange: (value: string) => void;
+  error?: boolean;
 }
 
 export function LicensePlateInput({
@@ -15,6 +16,7 @@ export function LicensePlateInput({
   required = false,
   value,
   onChange,
+  error = false,
 }: LicensePlateInputProps) {
   const inputsRef = useRef<(HTMLInputElement | null)[]>([]);
   const chars = value.padEnd(7, " ").split("").slice(0, 7);
@@ -60,7 +62,7 @@ export function LicensePlateInput({
             value={chars[i]?.trim() ?? ""}
             onChange={(e) => updateChar(i, e.target.value)}
             onKeyDown={(e) => handleKeyDown(i, e)}
-            className="h-11 w-10 rounded-lg border border-[#b8d4f0] bg-white text-center text-lg font-semibold text-top-blue outline-none focus:border-top-primary"
+            className={`h-11 w-10 rounded-lg border bg-white text-center text-lg font-semibold text-top-blue outline-none focus:border-top-primary ${error ? "border-red-400" : "border-[#b8d4f0]"}`}
           />
         ))}
         <span className="mx-1 text-xl font-bold text-top-blue">-</span>
@@ -75,7 +77,7 @@ export function LicensePlateInput({
             value={chars[i]?.trim() ?? ""}
             onChange={(e) => updateChar(i, e.target.value)}
             onKeyDown={(e) => handleKeyDown(i, e)}
-            className="h-11 w-10 rounded-lg border border-[#b8d4f0] bg-white text-center text-lg font-semibold text-top-blue outline-none focus:border-top-primary"
+            className={`h-11 w-10 rounded-lg border bg-white text-center text-lg font-semibold text-top-blue outline-none focus:border-top-primary ${error ? "border-red-400" : "border-[#b8d4f0]"}`}
           />
         ))}
       </div>

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import type { CompanyCode } from "@/lib/types";
 
 interface CompanyLogoProps {
@@ -5,57 +6,68 @@ interface CompanyLogoProps {
   size?: "sm" | "md" | "lg";
 }
 
-const companyStyles: Record<
+const companyConfig: Record<
   CompanyCode,
-  { bg: string; label: string; accent: string }
+  { label: string; logoPath: string | null; fallbackText: string; accent: string }
 > = {
-  TOP: { bg: "bg-white", label: "Thaioil", accent: "text-top-pink" },
-  OR: { bg: "bg-white", label: "OR", accent: "text-[#0066cc]" },
-  PTG: { bg: "bg-white", label: "PTG", accent: "text-[#e31b23]" },
-  Shell: { bg: "bg-white", label: "Shell", accent: "text-[#fbce07]" },
-  SFL: { bg: "bg-white", label: "SFL", accent: "text-[#003399]" },
+  TOP:   { label: "Thaioil", logoPath: "/logos/TOP.png",   fallbackText: "TOP", accent: "text-top-pink" },
+  OR:    { label: "OR",      logoPath: "/logos/OR.png",    fallbackText: "OR",  accent: "text-[#0066cc]" },
+  PTG:   { label: "PTG",     logoPath: "/logos/PTG.png",   fallbackText: "PTG", accent: "text-[#e31b23]" },
+  Shell: { label: "Shell",   logoPath: "/logos/Shell.png", fallbackText: "SH",  accent: "text-[#fbce07]" },
+  SFL:   { label: "SFL",     logoPath: "/logos/SFL.png",   fallbackText: "SFL", accent: "text-[#003399]" },
 };
 
 const sizeClasses = {
-  sm: "h-8 w-8 text-[10px]",
-  md: "h-10 w-10 text-xs",
-  lg: "h-16 w-16 text-sm",
+  sm: { box: "h-8 w-8",   img: 32,  text: "text-[10px]" },
+  md: { box: "h-10 w-10", img: 40,  text: "text-xs" },
+  lg: { box: "h-16 w-16", img: 64,  text: "text-sm" },
 };
 
 export function CompanyLogo({ company, size = "md" }: CompanyLogoProps) {
-  const style = companyStyles[company];
+  const config = companyConfig[company];
+  const sz = sizeClasses[size];
 
   return (
     <div className="flex items-center gap-2">
-      <div
-        className={`flex ${sizeClasses[size]} items-center justify-center rounded-lg border border-gray-100 font-bold ${style.bg} ${style.accent} card-shadow`}
-      >
-        {company === "Shell" ? "🐚" : company.slice(0, 2)}
+      <div className={`flex ${sz.box} items-center justify-center rounded-lg border border-gray-100 bg-white card-shadow overflow-hidden`}>
+        {config.logoPath ? (
+          <Image
+            src={config.logoPath}
+            alt={config.label}
+            width={sz.img}
+            height={sz.img}
+            className="object-contain p-1"
+          />
+        ) : (
+          <span className={`font-bold ${sz.text} ${config.accent}`}>{config.fallbackText}</span>
+        )}
       </div>
       {size !== "sm" && (
-        <span className="text-sm font-semibold text-top-blue">{style.label}</span>
+        <span className="text-sm font-semibold text-top-blue">{config.label}</span>
       )}
     </div>
   );
 }
 
 export function CompanyCardLogo({ company }: { company: CompanyCode }) {
-  const labels: Record<CompanyCode, { title: string; subtitle?: string }> = {
-    TOP: { title: "Thaioil", subtitle: "TOP" },
-    OR: { title: "OR" },
-    PTG: { title: "PTG" },
-    Shell: { title: "Shell" },
-    SFL: { title: "SFL" },
-  };
-
-  const info = labels[company];
+  const config = companyConfig[company];
 
   return (
     <div className="flex flex-col items-center gap-2">
-      <CompanyLogo company={company} size="lg" />
-      {info.subtitle && (
-        <span className="text-sm font-bold text-top-blue">{info.subtitle}</span>
-      )}
+      <div className="flex h-20 w-20 items-center justify-center rounded-xl border border-gray-100 bg-white card-shadow overflow-hidden">
+        {config.logoPath ? (
+          <Image
+            src={config.logoPath}
+            alt={config.label}
+            width={80}
+            height={80}
+            className="object-contain p-2"
+          />
+        ) : (
+          <span className={`text-lg font-bold ${config.accent}`}>{config.fallbackText}</span>
+        )}
+      </div>
+      <span className="text-sm font-semibold text-top-blue">{config.label}</span>
     </div>
   );
 }

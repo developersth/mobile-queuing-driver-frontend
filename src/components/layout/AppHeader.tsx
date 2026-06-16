@@ -2,10 +2,11 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { Bell, ChevronLeft, Menu } from "lucide-react";
 import { CompanyLogo } from "@/components/branding/CompanyLogo";
 import type { CompanyCode } from "@/lib/types";
-import { mockUser } from "@/lib/mock-data";
+import { useAuth } from "@/lib/auth-context";
 
 interface AppHeaderProps {
   company?: CompanyCode;
@@ -14,6 +15,7 @@ interface AppHeaderProps {
   title?: string;
   onMenuClick?: () => void;
   notificationCount?: number;
+  carrierName?: string;
 }
 
 export function AppHeader({
@@ -22,9 +24,13 @@ export function AppHeader({
   showBack = false,
   title,
   onMenuClick,
-  notificationCount = 6,
+  notificationCount = 0,
+  carrierName,
 }: AppHeaderProps) {
   const router = useRouter();
+  const { session } = useAuth();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
 
   return (
     <header className="bg-white">
@@ -65,12 +71,12 @@ export function AppHeader({
         </Link>
       </div>
 
-      {!title && (
+      {!title && mounted && session && (
         <div className="border-t border-gray-100 px-4 py-3">
-          <p className="font-bold text-top-blue">{mockUser.name}</p>
-          <p className="text-sm text-top-blue/80">
-            บริษัทสังกัด : {mockUser.company}
-          </p>
+          <p className="font-bold text-top-blue">{session.fullName}</p>
+          {carrierName && (
+            <p className="text-sm text-top-blue/80">บริษัทสังกัด : {carrierName}</p>
+          )}
         </div>
       )}
     </header>
