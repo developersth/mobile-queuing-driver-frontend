@@ -113,6 +113,7 @@ export default function ShipmentDetailPage({ params }: { params: Promise<{ id: s
   const [headPlate, setHeadPlate] = useState("");
   const [trailerPlate, setTrailerPlate] = useState("");
   const [plateError, setPlateError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   useEffect(() => {
     if (!session?.driverId) return;
@@ -146,9 +147,13 @@ export default function ShipmentDetailPage({ params }: { params: Promise<{ id: s
     setConfirming(true);
     setConfirmError("");
     try {
-      await acknowledgeApi.acknowledge(id, shipment?.customerGroupId ?? "", session?.driverId ?? 0);
+      const res = await acknowledgeApi.acknowledge(id, shipment?.customerGroupId ?? "", session?.driverId ?? 0);
       setShowModal(false);
-      router.push("/tasks/recent");
+      if (res.message) {
+        setSuccessMessage(res.message);
+      } else {
+        router.push("/tasks/recent");
+      }
     } catch (err) {
       setConfirmError(err instanceof Error ? err.message : "เกิดข้อผิดพลาด กรุณาลองใหม่");
     } finally {
@@ -353,6 +358,22 @@ export default function ShipmentDetailPage({ params }: { params: Promise<{ id: s
         <p className="mt-3 text-xs text-top-muted">
           <span className="underline">หมายเหตุ</span> กรณีมีเลขทะเบียน 6 ตัว กรุณาระบุ 0 ที่ช่องแรก
         </p>
+      </Modal>
+
+      {/* acknowledge success modal */}
+      <Modal
+        open={!!successMessage}
+        onClose={() => { setSuccessMessage(""); router.push("/tasks/recent"); }}
+        title="แจ้งเตือน"
+      >
+        <p className="text-center text-sm text-top-blue">{successMessage}</p>
+        <Button
+          fullWidth
+          className="mt-6"
+          onClick={() => { setSuccessMessage(""); router.push("/tasks/recent"); }}
+        >
+          ตกลง
+        </Button>
       </Modal>
     </div>
   );
